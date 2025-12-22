@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+#root {
+    width: 100vw;
+    min-width: 300px;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

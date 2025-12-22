@@ -1,0 +1,13 @@
+header, footer {
+    background-color: #f3f3f3;
+    height: 60px;
+}
+header {
+    border-bottom: 1px solid #e3e3e3;
+}
+main {
+    flex: 1;
+}
+footer {
+    border-top: 1px solid #e3e3e3;
+}
