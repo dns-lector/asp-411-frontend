@@ -5,7 +5,7 @@ import AppContext from "../context/AppContext";
 import Base64 from "../../shared/base64/Base64";
 
 export default function Layout() {
-    const {user, setUser} = useContext(AppContext)!;
+    const {user, setUser, request} = useContext(AppContext)!;
     const closeModalRef = useRef<HTMLButtonElement>(null);
 
     const authSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -17,22 +17,24 @@ export default function Layout() {
         // RFC 7617   https://datatracker.ietf.org/doc/html/rfc7617
         const userPass = login + ':' + password;
         const basicCredentials = Base64.encode(userPass);
-        fetch("https://localhost:7016/User/ApiAuthenticate", {
+        request("api://User/ApiAuthenticate", {
             method: 'GET',
             headers: {
                 'Authorization': "Basic " + basicCredentials
             }
-        }).then(r => {
-            if (r.status >= 400) {
-                r.text().then(t => {
-                    console.log(t);
-                });
+        }, true)
+        .then(j => {
+            if (j.status.code >= 400) {
+                console.log(j.data);
             }
             else {
-                r.json().then(j => {
-                    setUser(j);
-                    closeModalRef.current?.click();
-                });
+                setUser(j.data);
+                closeModalRef.current?.click();
+                // також зберігаємо одержані дані у window.localStorage
+                // а до стартового ефекту App додаємо коди перевірки чи є дані у window.localStorage
+                // А також коди видалення запису з window.localStorage при виході з авт. режиму
+                // Впровадити "галочку" <<запам'ятати мене>> і від її значення вирішувати
+                //  чи зберігати дані у window.localStorage
             }
         });
     };

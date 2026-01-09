@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./ui/Home.css";
 import { Link } from "react-router-dom";
+import type IGroup from "../../entities/group/model/IGroup";
+import AppContext from "../../features/context/AppContext";
 
 export default function Home() {
-    const [model, setModel] = useState<ShopIndexViewModel>({groups: []});
+    const [groups, setGroups] = useState<Array<IGroup>>( [] );
+    const {request} = useContext(AppContext)!;
 
     useEffect(() => {
-        fetch("https://localhost:7016/Shop/ApiIndex")
-        .then(r => r.json())
-        .then(setModel);
+        request("api://Shop/ApiIndex")
+        .then(setGroups);
     }, []);
 
     return <>
@@ -17,12 +19,12 @@ export default function Home() {
     </div>
 
     <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 w-100">
-      {model.groups.map(g => <GroupCard key={g.id} group={g} />)}
+      {groups.map(g => <GroupCard key={g.id} group={g} />)}
     </div>
     </>;
 }
 
-function GroupCard({group}:{group:Group}) {
+function GroupCard({group}:{group:IGroup}) {
     return <div className="col">
         <Link className="nav-link h-100" to={"/group/" + group.slug}>
             <div className="card h-100">
@@ -37,18 +39,4 @@ function GroupCard({group}:{group:Group}) {
             </div>
         </Link>
     </div>;
-}
-
-interface ShopIndexViewModel {
-    groups: Array<Group>,
-}
-
-interface Group {
-    id: string,
-    name: string,
-    description: string,
-    imageUrl: string,
-    slug: string,
-    deleteAt: string,
-    // products:
 }

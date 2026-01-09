@@ -1,17 +1,18 @@
 import { useParams } from 'react-router-dom';
 import './ui/Group.css';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import type IGroup from '../../entities/group/model/IGroup';
 import ProductCard from '../../entities/product/ui/ProductCard';
+import AppContext from '../../features/context/AppContext';
 
 export default function Group() {
     const {slug} = useParams();
     const [group, setGroup] = useState<IGroup|null>(null);
+    const {request} = useContext(AppContext)!;
 
     useEffect(() => {
-        fetch("https://localhost:7016/Shop/ApiGroup/" + slug)
-        .then(r => r.json())
-        .then(j => setGroup(j.data));
+        request("api://Shop/ApiGroup/" + slug)
+        .then(setGroup);
     }, [slug]);
 
     return <div className="text-center">
